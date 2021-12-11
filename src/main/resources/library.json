@@ -1,0 +1,52 @@
+{
+  "1": {
+    "title": "Diuna",
+    "authorName": "Frank",
+    "authorSurname": "Herbert"
+  },
+  "2": {
+    "title": "Dżuma",
+    "authorName": "Albert",
+    "authorSurname": "Camus"
+  },
+  "3": {
+    "title": "Ostatnia piosenka",
+    "authorName": "Nicholas",
+    "authorSurname": "Sparks"
+  },
+  "4": {
+    "title": "Love, Rosie",
+    "authorName": "Cecelia",
+    "authorSurname": "Ahern"
+  },
+  "5": {
+    "title": "November 9",
+    "authorName": "Colleen",
+    "authorSurname": "Hoover"
+  },
+  "6": {
+    "title": "Metro 2033",
+    "authorName": "Dmitry",
+    "authorSurname": "Glukhovsky"
+  },
+  "7": {
+    "title": "Słowik",
+    "authorName": "Kristin",
+    "authorSurname": "Hannah"
+  },
+  "8": {
+    "title": "Shogun",
+    "authorName": "James",
+    "authorSurname": "Clavell"
+  },
+  "9": {
+    "title": "Zabić drozda",
+    "authorName": "Harper",
+    "authorSurname": "Lee"
+  },
+  "10": {
+    "title": "Pachnidło",
+    "authorName": "Patrick",
+    "authorSurname": "Süskind"
+  }
+}
