@@ -23,7 +23,7 @@ public class JSONSerializer {
     }
 
     public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
-        getBooksMap(readJSON("src/main/resources/library.json"));
+        getBooksConcurrentHashMap(readJSON("src/main/resources/library.json"));
     }
 
     private static String[] parseJsonToString(String json) {
@@ -36,7 +36,7 @@ public class JSONSerializer {
         return out;
     }
 
-    private static ConcurrentHashMap<Integer, Book> getBooksMap(String json) throws ClassNotFoundException {
+    public static ConcurrentHashMap<Integer, Book> getBooksConcurrentHashMap(String json) throws ClassNotFoundException {
         ConcurrentHashMap<Integer, Book> booksDictionary = new ConcurrentHashMap<>();
         String[] input = parseJsonToString(json);
         // Using reflection:
@@ -63,7 +63,7 @@ public class JSONSerializer {
                 bookValues[i] = value.trim().substring(1, value.length() - 2);
             }
 
-            System.out.println("Book values: " + Arrays.toString(bookValues));
+            // System.out.println("Book values: " + Arrays.toString(bookValues));
             // TODO: Convert to java reflection:
             Book toPut = new Book(id, bookValues[0], bookValues[1], bookValues[2]);
             booksDictionary.put(id, toPut);

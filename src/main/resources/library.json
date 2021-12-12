@@ -48,5 +48,15 @@
     "title": "Pachnidło",
     "authorName": "Patrick",
     "authorSurname": "Süskind"
+  },
+  "11": {
+    "title": "Jestem",
+    "authorName": "Dodaną",
+    "authorSurname": "Książką"
+  },
+  "12": {
+    "title": "1984",
+    "authorName": "George",
+    "authorSurname": "Orwell"
   }
 }
