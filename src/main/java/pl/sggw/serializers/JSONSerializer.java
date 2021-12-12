@@ -22,8 +22,7 @@ public class JSONSerializer {
         return json.toString();
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        parseJsonToString(readJSON("src/main/resources/library.json"));
+    public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
         getBooksMap(readJSON("src/main/resources/library.json"));
     }
 
@@ -37,39 +36,36 @@ public class JSONSerializer {
         return out;
     }
 
-    private static ConcurrentHashMap<Integer, Book> getBooksMap(String json) {
+    private static ConcurrentHashMap<Integer, Book> getBooksMap(String json) throws ClassNotFoundException {
         ConcurrentHashMap<Integer, Book> booksDictionary = new ConcurrentHashMap<>();
-        String[] entries = parseJsonToString(json);
+        String[] input = parseJsonToString(json);
+        // Using reflection:
+        String[] bookValues = new String[Class.forName(Book.class.getName()).getDeclaredFields().length - 1];
 
-        String[] keyValuePair;
-        int id;
-        String bookData;
-        String[] bookProperties;
-        String[] bookValues = new String[3];
-        Book book;
-        for (String entry : entries) {
-            System.out.println("---------");
+        for (String entry : input) {
             // "1": {    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  }
             // "1":{    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  }
             // ["1"], [{    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  }}]
-            keyValuePair = entry.trim().split(":", 2);
-            printArray(keyValuePair);
-            id = Integer.parseInt(keyValuePair[0].substring(1, keyValuePair[0].length() - 1));
-            System.out.println(id);
+            String[] keyValuePair = entry.trim().split(":", 2);
+            // 1
+            int id = Integer.parseInt(keyValuePair[0].substring(1, keyValuePair[0].length() - 1));
+            // "    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  "
+            String bookData = keyValuePair[1].trim().substring(1, keyValuePair[1].length() - 2).trim();
 
-            bookData = keyValuePair[1].trim().substring(1, keyValuePair[1].length() - 2);
-            System.out.println(bookData);
-            bookProperties = bookData.trim().split(",");
-            System.out.println("properties");
-            printArray(bookProperties);
+            String[] bookProperties = bookData.trim().split(",  ");
             for (int i = 0; i < bookProperties.length; i++) {
+                String val = bookProperties[i].trim();
+                bookProperties[i] = val;
+            }
+
+            for (int i = 0; i < bookValues.length; i++) {
                 String value = bookProperties[i].split(":")[1];
                 bookValues[i] = value.trim().substring(1, value.length() - 2);
             }
-            System.out.println("values" + Arrays.toString(bookValues));
 
-//            book = new Book(bookValues[0], bookValues[1], bookValues[2], id);
-//            booksDictionary.put(id, book);
+            System.out.println("Book values: " + Arrays.toString(bookValues));
+            Book toPut = new Book(id, bookValues[0], bookValues[1], bookValues[2]);
+            booksDictionary.put(id, toPut);
         }
 
         return booksDictionary;
