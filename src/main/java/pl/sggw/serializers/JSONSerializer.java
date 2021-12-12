@@ -64,6 +64,7 @@ public class JSONSerializer {
             }
 
             System.out.println("Book values: " + Arrays.toString(bookValues));
+            // TODO: Convert to java reflection:
             Book toPut = new Book(id, bookValues[0], bookValues[1], bookValues[2]);
             booksDictionary.put(id, toPut);
         }
