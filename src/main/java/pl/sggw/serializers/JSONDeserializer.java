@@ -47,7 +47,9 @@ public class JSONDeserializer {
             throws IOException, ClassNotFoundException, IllegalAccessException {
         String content = convertConcurrentHashMapToString(contentMap);
         // Deleting the contents of file without deleting the file itself:
-        new FileOutputStream(path).close();
+        PrintWriter printWriter = new PrintWriter(path);
+        printWriter.print("");
+        printWriter.close();
         // Write to a file:
         BufferedWriter writer = new BufferedWriter(new FileWriter(path, true));
         writer.append(content);
@@ -59,10 +61,8 @@ public class JSONDeserializer {
         //String val = convertBookToString(book);
         ConcurrentHashMap<Integer, Book> books = JSONSerializer.getBooksConcurrentHashMap(
                 JSONSerializer.readJSON("src/main/resources/library.json"));
-        Book toAdd = new Book(11, "Jestem", "Dodaną", "Książką");
-        Book toAdd2 = new Book(12, "1984", "George", "Orwell");
-        books.put(11, toAdd);
-        books.put(12, toAdd2);
+        Book toAdd2 = new Book(11, "1984", "George", "Orwell");
+        books.remove(10);
         createFileFromConcurrentHashMap(books, "src/main/resources/library.json");
     }
 }
