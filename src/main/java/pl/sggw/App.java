@@ -14,13 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class App {
     private static ConcurrentHashMap<Integer, Book> bookDataBase = new ConcurrentHashMap<>();
-    private static final Integer PORT = 8080;
+    private static Integer PORT = 8080;
     private static final Boolean CONNECTION = true;
     private static final String RESPONSE_HEADERS = "HTTP/1.1 200 OK\nConnection: close\nContent-Type: text/html\n\n";
     private static final String DATABASE_PATH = "src/main/resources/library.json";
     private static String responseView = "";
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        // read env port for future heroku deployment
+        try {
+            PORT = Integer.valueOf(System.getenv("PORT"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         ServerSocket serverSocket = new ServerSocket(PORT);
         String loadedJSON = JSONSerializer.readJSON(DATABASE_PATH);
         bookDataBase = JSONSerializer.getBooksConcurrentHashMap(loadedJSON);
