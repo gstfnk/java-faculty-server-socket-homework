@@ -4,7 +4,6 @@ import pl.sggw.model.Book;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,34 +41,54 @@ public class JSONSerializer {
         // Using reflection:
         String[] bookValues = new String[Class.forName(Book.class.getName()).getDeclaredFields().length - 1];
 
-        for (String entry : input) {
+        for (String in : input) {
             // "1": {    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  }
             // "1":{    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  }
             // ["1"], [{    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  }}]
-            String[] keyValuePair = entry.trim().split(":", 2);
+            String[] keyValuePair = getKeyValuePair(in);
             // 1
-            int id = Integer.parseInt(keyValuePair[0].substring(1, keyValuePair[0].length() - 1));
+            int id = getId(keyValuePair[0]);
             // "    "title": "Diuna",    "authorName": "Frank",    "authorSurname": "Herbert"  "
             String bookData = keyValuePair[1].trim().substring(1, keyValuePair[1].length() - 2).trim();
 
-            String[] bookProperties = bookData.trim().split(",  ");
-            for (int i = 0; i < bookProperties.length; i++) {
-                String val = bookProperties[i].trim();
-                bookProperties[i] = val;
-            }
+            String[] bookProperties = getBookProperties(bookData);
 
-            for (int i = 0; i < bookValues.length; i++) {
-                String value = bookProperties[i].split(":")[1];
-                bookValues[i] = value.trim().substring(1, value.length() - 2);
-            }
+            distinctBookValues(bookValues, bookProperties);
 
-            // System.out.println("Book values: " + Arrays.toString(bookValues));
-            // TODO: Convert to java reflection:
-            Book toPut = new Book(id, bookValues[0], bookValues[1], bookValues[2]);
+            Book toPut = getBook(new Book(id, bookValues[0], bookValues[1], bookValues[2]));
             booksDictionary.put(id, toPut);
         }
 
         return booksDictionary;
+    }
+
+    private static String[] getKeyValuePair(String entry) {
+        String[] keyValuePair = entry.trim().split(":", 2);
+        return keyValuePair;
+    }
+
+    private static int getId(String s) {
+        return Integer.parseInt(s.substring(1, s.length() - 1));
+    }
+
+    private static Book getBook(Book toPut1) {
+        return toPut1;
+    }
+
+    private static void distinctBookValues(String[] bookValues, String[] bookProperties) {
+        for (int i = 0; i < bookValues.length; i++) {
+            String value = bookProperties[i].split(":")[1];
+            bookValues[i] = value.trim().substring(1, value.length() - 2);
+        }
+    }
+
+    private static String[] getBookProperties(String bookData) {
+        String[] bookProperties = bookData.trim().split(",  ");
+        for (int i = 0; i < bookProperties.length; i++) {
+            String val = bookProperties[i].trim();
+            bookProperties[i] = val;
+        }
+        return bookProperties;
     }
 
     private static void printArray(String[] array) {

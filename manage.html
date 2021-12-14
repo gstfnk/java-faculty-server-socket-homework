@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Remover</title>
+    <link rel="stylesheet" href="https://igoradamenko.github.io/awsm.css/css/awsm_theme_mischka.css">
+    <script>
+        function goToBooks() {
+            window.location.href = "/books.html";
+        }
+    </script>
+</head>
+<body style="text-align: center">
+<form action="/clearBooksAction" method="post">
+    <p>Confirm removal of all books:</p>
+    <input type="submit" value="Yes" onclick={goToBooks()} />
+    <input type="button" value="No" onclick={goToBooks()} />
+</form>
+</body>
+</html>

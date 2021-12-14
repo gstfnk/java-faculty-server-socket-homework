@@ -1,20 +1,29 @@
 package pl.sggw;
 
+import pl.sggw.handlers.GetHandler;
+import pl.sggw.handlers.PostHandler;
+import pl.sggw.handlers.RequestHandler;
+import pl.sggw.model.Book;
+import pl.sggw.serializers.JSONSerializer;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalTime;
 import java.util.HashMap;
-
-import static pl.sggw.handlers.RequestHandler.getRequestHeaders;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class App {
+    private static ConcurrentHashMap<Integer, Book> bookDataBase = new ConcurrentHashMap<>();
     private static final Integer PORT = 8080;
     private static final Boolean CONNECTION = true;
     private static final String RESPONSE_HEADERS = "HTTP/1.1 200 OK\nConnection: close\nContent-Type: text/html\n\n";
+    private static final String DATABASE_PATH = "src/main/resources/library.json";
+    private static String responseView = "";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         ServerSocket serverSocket = new ServerSocket(PORT);
+        String loadedJSON = JSONSerializer.readJSON(DATABASE_PATH);
+        bookDataBase = JSONSerializer.getBooksConcurrentHashMap(loadedJSON);
 
         System.out.println("Server: http://localhost:" + PORT);
 
@@ -24,19 +33,23 @@ public class App {
     }
 
     public static void serveRequest(Socket request) throws IOException {
-        InputStream inputStream = request.getInputStream();
-        OutputStream outputStream = request.getOutputStream();
+        PrintWriter out = new PrintWriter(request.getOutputStream());
+        HashMap<String, String> requestHeaders = RequestHandler.getRequestHeaders(request.getInputStream());
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+        String method = requestHeaders.get("Method");
+        String route = requestHeaders.get("Resource");
 
-        HashMap<String, String> requestHeaders = getRequestHeaders(inputStream);
+        if (method.equalsIgnoreCase("POST")) {
+            HashMap<String, String> requestBody = RequestHandler.getRequestBody(requestHeaders.get("Body"));
+            responseView = PostHandler.returnResource(route, requestBody, bookDataBase);
+        } else if (method.equalsIgnoreCase("GET")) {
+            responseView = GetHandler.returnResource(route, bookDataBase);
+        }
 
-        writer.write(RESPONSE_HEADERS);
-        writer.write("<head></head><body>Test " + LocalTime.now() + "</body>\n\n");
-
-        writer.flush();
-        writer.close();
+        out.print(RESPONSE_HEADERS);
+        out.println(responseView);
+        out.flush();
+        out.close();
     }
 
     private static void listenAndServe(ServerSocket serverSocket) throws IOException {

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://igoradamenko.github.io/awsm.css/css/awsm_theme_mischka.css">
+</head>
+<script>
+    function goToBooks() {
+        window.location.href = "/books.html";
+    }
+</script>
+<body style="text-align: center">
+<form action="/updateBookAction" method="post">
+    <input type="hidden" value="%s" name="id" id="id"/>
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title" value="%s"/>
+    <br/>
+    <label for="authorName">Author Name</label>
+    <input type="text" name="authorName" id="authorName" value="%s"/>
+    <br/>
+    <label for="authorSurname">Author Surname</label>
+    <input type="text" name="authorSurname" id="authorSurname" value="%s"/>
+    <br/>
+    <input type="submit" value="Submit" onclick={goToBooks()} />
+</form>
+</body>
+</html>
